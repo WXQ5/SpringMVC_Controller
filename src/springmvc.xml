@@ -61,4 +61,13 @@
             </props>
         </property>
     </bean>
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--拦截器拦截的路经-->
+            <mvc:mapping path="/dept/*"/>
+            <!--拦截器所处的具体路径-->
+            <bean class="com.abc.interceptor.DeptInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

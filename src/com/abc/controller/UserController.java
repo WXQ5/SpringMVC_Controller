@@ -17,7 +17,7 @@ public class UserController {
     //通过对象的属性来接收请求参数,要求请求参数的名字和对象的属性名一致。
     //方法的返回值为String类型的，默认是页面的名字
     public String login(User user,HttpServletRequest request, Model model){
-        int i= 100/0; //人工制造异常
+       // int i= 100/0; //人工制造异常
         if("admin".equals(user.getUsername()) && "123456".equals(user.getPassword())){
             request.getSession().setAttribute("user",user);
             System.out.println(user.getUsername());

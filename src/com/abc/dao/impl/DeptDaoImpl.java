@@ -38,7 +38,7 @@ public class DeptDaoImpl implements IDeptDao {
                 dept.setDeptno(set.getInt(1));
                 dept.setDname(set.getString(2));
                 dept.setLoc(set.getString(3));
-                System.out.println(set.getString(2));
+                //System.out.println(set.getString(2));
                 depts.add(dept);
             }
             pst.close();
