@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+<!--controller如果采用注释的方式，值需要启动mvc的注解驱动，那么映射处理器可以不用手动配置-->
+    <mvc:annotation-driven></mvc:annotation-driven><!--启动注解-->
+    <!--配置试图解析器-->
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--ModelAndView 返回的view根据以下的配置进行解析-->
+        <property name="prefix" value="/"></property><!--前缀-->
+        <property name="suffix" value=".jsp"></property><!--后缀-->
+    </bean>
+    <!--扫描需要将类在IOC容器中生成bean的包-->
+    <context:component-scan base-package="com.abc.controller"></context:component-scan>
+    <bean id="ds"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8"/>
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="user" value="root"/>
+        <property name="password" value="abc123456"/>
+        <property name="initialPoolSize" value="3"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="minPoolSize" value="1"/>
+        <property name="acquireIncrement" value="3"/>
+        <property name="maxIdleTime" value="60"/>
+    </bean>
+    <!--将数据源注入给template-->
+    <!--dao层使用的工具类（实现类似连接数据库的功能）-->
+    <bean class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="ds"></property>
+    </bean>
+    <!--配置容器生成bean的扫描的包-->
+    <context:component-scan base-package="com.abc.dao com.abc.service"></context:component-scan>
+
+
+    <!--异常处理的配置-->
+    <!--配置异常处理器，只要任何一个action发生异常，都会被该处理器处理-->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+       <!--默认的异常处理意外。。异常没在以下配置中的时候执行-->
+        <property name="defaultErrorView" value="error"></property>
+        <!--将异常信息存放的model里面，方便错误处理页面获取，ex为定义的变量名 默认为exception-->
+        <property name="exceptionAttribute" value="ex"></property>
+       <!--定义异常处理页面，不同的页面对应不同的页面。用异常类名或者完整路径作为key，后面为异常页面-->
+        <property name="exceptionMappings">
+            <props>
+                <!--数学运算异常对应，error_ari页面-->
+                <prop key="java.lang.ArithmeticException">error_ari</prop>
+                <prop key="java.lang.NullPointerException">error_null</prop>
+                <prop key="java.lang.IndexOutOfBoundsException">error_index</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
